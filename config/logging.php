@@ -72,11 +72,6 @@ return [
             'days' => env('LOG_DAILY_DAYS', 14),
             'replace_placeholders' => true,
         ],
-        'user_inputs' => [
-        'driver' => 'single',
-        'path' => storage_path('logs/user_inputs.log'),
-        'level' => 'info',
-    ],
 
         'slack' => [
             'driver' => 'slack',
@@ -103,10 +98,10 @@ return [
             'driver' => 'monolog',
             'level' => env('LOG_LEVEL', 'debug'),
             'handler' => StreamHandler::class,
-            'formatter' => env('LOG_STDERR_FORMATTER'),
-            'with' => [
+            'handler_with' => [
                 'stream' => 'php://stderr',
             ],
+            'formatter' => env('LOG_STDERR_FORMATTER'),
             'processors' => [PsrLogMessageProcessor::class],
         ],
 

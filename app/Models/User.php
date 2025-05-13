@@ -21,7 +21,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'net_id',
     ];
 
     /**
@@ -46,9 +45,4 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
-    // public function studies(): HasMany
-    // {
-    //     return $this->hasMany(Study::class); // Assuming 'Study' is the model name for your studies
-    // }
 }
