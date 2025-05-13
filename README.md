@@ -100,11 +100,11 @@ faiss_index finds the relevant parts of the document that are relevant to the qu
 - Extensive tutorial: https://www.youtube.com/watch?v=EFUE4DHiAPM&t=1858s
 
 ## Running Bonebase website and RAG:
-1. docker-compose down && docker-compose up -d
-2. docker run laravel-app
-3. sudo systemctl start nginx
-4. uvicorn api_backend_rag:app --host 0.0.0.0 --port 5000 --reload
-5. Ensure you have an OpenAPI key and set it with CHATGPT_KEY variable in api_backend_rag.py
+1. docker run laravel-app
+2. sudo systemctl start nginx
+3. uvicorn api_backend_rag:app --host 0.0.0.0 --port 5000 --reload
+4. Ensure you have an OpenAPI key and set it with CHATGPT_KEY variable in api_backend_rag.py
+- run docker-compose down && docker-compose up -d in case you run 502 bad gateway error.
 - In case php-fpm port is not being registered, find the php-fpm configuration file and set listen = 127.0.0.1:9001
 
 ## Installation
