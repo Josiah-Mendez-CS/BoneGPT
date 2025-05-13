@@ -96,7 +96,9 @@ Allows users to manage study metadata and interact with an AI-powered chatbot. T
 - First construct a prompt template that includes context as {context} and question as {question} in the string provided. Use ChatPromptTemplate.from_template() for complete instantiation.
 - Convert the document with vector embedding and store it with faiss_index.
 faiss_index finds the relevant parts of the document that are relevant to the query and llm will output appropriate response based on combined prompt.
+- For running backend run following on terminal: uvicorn api_backend_rag:app --host 0.0.0.0 --port 5000 --reload
 - Extensive tutorial: https://www.youtube.com/watch?v=EFUE4DHiAPM&t=1858s
+
 
 ## Installation
 
