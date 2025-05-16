@@ -4,3 +4,4 @@ venv
 
 glove.6B.300d.txt
 __pycache__
+.env
