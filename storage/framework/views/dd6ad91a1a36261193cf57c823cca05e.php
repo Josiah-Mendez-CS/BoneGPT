@@ -1,8 +1,6 @@
-@extends('layout')
+<?php $__env->startSection('title', 'Study Information'); ?>
 
-@section('title', 'Study Information')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <head>
     <style>
         <?php include '/home/ajacob/BoneGPT/resources/css/chatbot.css'; ?>
@@ -13,8 +11,8 @@
     <div class="container">
         <h1 class="mb-4">Study Information</h1>
         <!-- Action is just a placeholder since we won't store the data -->
-        <form method="GET" action="{{ route('study.study-information', ['study' => 1]) }}" >
-            @csrf
+        <form method="GET" action="<?php echo e(route('study.study-information', ['study' => 1])); ?>" >
+            <?php echo csrf_field(); ?>
             
             <div class="mb-3">
                 <label for="title" class="form-label">Study Title</label>
@@ -58,7 +56,7 @@
 
             <div x-data="{ 
                 isPublished: {'false')},
-                publicationPlan: '{{ old('is_published') == '1' ? '' : (old('publication_plan', $study->publication_plan ?? '')) }}',
+                publicationPlan: '<?php echo e(old('is_published') == '1' ? '' : (old('publication_plan', $study->publication_plan ?? ''))); ?>',
                 showSpecialIssueInfo() { return this.publicationPlan === 'special_issue' },
                 showEmbargoField() { return this.publicationPlan === 'different_journal' }
             }">
@@ -154,4 +152,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /home/ajacob/BoneGPT/resources/views/study/study-information.blade.php ENDPATH**/ ?>

@@ -1,0 +1,6 @@
+node_modules
+vendor
+venv
+
+glove.6B.300d.txt
+__pychache__

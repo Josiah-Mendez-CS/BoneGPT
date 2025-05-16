@@ -1,8 +1,6 @@
-@extends('layout')
+<?php $__env->startSection('title', 'Subject Areas'); ?>
 
-@section('title', 'Subject Areas')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <style>
         /* Add your chatbot-specific styles here */
         .chatbot-bubble {
@@ -141,22 +139,22 @@
 
 <div class="container">
     <h1 class="mb-4">Subject Areas</h1>
-    <form method="GET" action="{{ route('study.subject-areas', ['study' => $study['id']]) }}" hx-boost="true" data-confirmchanges>
-        @csrf
+    <form method="GET" action="<?php echo e(route('study.subject-areas', ['study' => $study['id']])); ?>" hx-boost="true" data-confirmchanges>
+        <?php echo csrf_field(); ?>
         <div class="row">
-            @foreach(App\Models\Study::getSubjectAreaCategories() as $category => $areas)
+            <?php $__currentLoopData = App\Models\Study::getSubjectAreaCategories(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category => $areas): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="col-md-3">
-                    <h4>{{ $category }}</h4>
-                    @foreach($areas as $key => $label)
+                    <h4><?php echo e($category); ?></h4>
+                    <?php $__currentLoopData = $areas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" 
-                                   name="subject_areas[]" value="{{ $key }}" id="{{ $key }}"
-                                   {{ in_array($key, old('subject_areas', $study->subject_areas ?? [])) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="{{ $key }}">{{ $label }}</label>
+                                   name="subject_areas[]" value="<?php echo e($key); ?>" id="<?php echo e($key); ?>"
+                                   <?php echo e(in_array($key, old('subject_areas', $study->subject_areas ?? [])) ? 'checked' : ''); ?>>
+                            <label class="form-check-label" for="<?php echo e($key); ?>"><?php echo e($label); ?></label>
                         </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
 
         <div class="mt-4 d-flex">
@@ -477,4 +475,5 @@ document.getElementById("generate-study-btn").addEventListener("click", async ()
 
 </body>
 </html>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /home/ajacob/BoneGPT/resources/views/study/subject-areas.blade.php ENDPATH**/ ?>

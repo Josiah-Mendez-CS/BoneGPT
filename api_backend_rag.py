@@ -227,12 +227,26 @@ class ExtractedInfo(BaseModel):
     publication_year: AnswerWithSources
     paper_authors: AnswerWithSources
 """
-JSON_DEFAULT_PATH = "/home/sdp/laravel-app/public"
+JSON_DEFAULT_PATH = "/home/ajacob/BoneGPT/public"
 
-@app.post("api/chatbot")
+@app.post("/test")
+async def test(message: str | None):
+    print("hello")
+    return {"reply": "It worked"}
+
+@app.get("/")
+async def test1():
+    print("hello")
+    return {"reply": "It worked"}
+
+@app.post("/chatbot")
 async def chat_with_bot(message: str = Form(...), k: int = 5):
-    CHATGPT_APIKEY = ""
+    '''
+    CHATGPT_APIKEY = "???"
     llm = ChatOpenAI(model = "gpt-4o-mini", api_key = CHATGPT_APIKEY, temperature = 0.5, max_tokens = 400)
+    '''
+    print("hello")
+    llm = genai.Client(api_key="???")
 
     template = return_template() # get the template.
     prompt_template = ChatPromptTemplate.from_template(template)
@@ -249,14 +263,15 @@ async def chat_with_bot(message: str = Form(...), k: int = 5):
     best_matches = "\n\n---\n\n".join([str(document_chunks[idx]) for idx in indices[0]])
 
     prompt = prompt_template.format(context = best_matches, question = message)
-
+    print(prompt)
     ### this is where we need to connect to our model.
-    output = llm.invoke(prompt).content # the output where we'll have to restructure our text a bit.
+    output = llm.models.generate_content(model="gemini-2.0-flash", contents=prompt).text
+    #output = llm.invoke(prompt).content # the output where we'll have to restructure our text a bit.
     output = output.replace(".", ".\n")
     return {"reply": f"Based on your query, here’s what I found:\n\n{output}"}
 
 
-@app.post("/api/simultaneous_generate_text") 
+@app.get("/api/simultaneous_generate_text") 
 async def simultaneous_generate_text():
     answer_1 = chat_with_bot_structured()
     answer_2 = chat_with_bot_structured_2() 
@@ -361,6 +376,7 @@ What are the conflicts of interest of the paper?
 When was the paper published, answer ONLY in the format: "MM/DD/YYYY" no puncutation whatsoever?
 Has this study been published, answer only yes or no without punctuation""", k: int = 5):
     # Initialize your LLM
+    """
     CHATGPT_APIKEY = ""
     llm = ChatOpenAI(
         model="gpt-4o-mini",
@@ -368,6 +384,8 @@ Has this study been published, answer only yes or no without punctuation""", k: 
         temperature=0.5,
         max_tokens=1200
     )
+    """
+    llm = genai.Client(api_key="???")
     template = return_template()
     prompt_template = ChatPromptTemplate.from_template(template)
 
@@ -390,11 +408,14 @@ Has this study been published, answer only yes or no without punctuation""", k: 
         best_matches = "\n\n---\n\n".join([str(document_chunks[idx]) for idx in indices[0]])
         prompt = prompt_template.format(context = best_matches, question = message)
 
+        print(prompt)
+
         if idx == 1:
             saved_chunks = best_matches
 
 
-        structured_output = llm.invoke(prompt).content #
+        structured_output = llm.models.generate_content(model="gemini-2.0-flash", contents=prompt).text
+        #structured_output = llm.invoke(prompt).content #
         #structured_output = structured_output.replace(".", ".\n")
         outputs[message] = structured_output # then we need to print that.
         idx+=1
@@ -424,6 +445,7 @@ In list 4, strictly list only the most directly relevant subject areas in the pa
 
 
     Collection_List = [list1, list2, list3, list4]
+    '''
     CHATGPT_APIKEY = ""
     llm = ChatOpenAI(
         model="gpt-4o-mini",
@@ -431,6 +453,8 @@ In list 4, strictly list only the most directly relevant subject areas in the pa
         temperature=0.3,
         max_tokens=1200
     )
+    '''
+    llm = genai.Client(api_key="???")
     # Retrieve your prompt template (which should expect keys "context" and "question")
     template = return_template()
     prompt_template = ChatPromptTemplate.from_template(template)
@@ -452,7 +476,8 @@ In list 4, strictly list only the most directly relevant subject areas in the pa
         best_matches = "\n\n---\n\n".join([str(document_chunks[idx]) for idx in indices[0]])
 
         prompt = prompt_template.format(context = best_matches, question = message)
-        structured_output = llm.invoke(prompt).content
+        structured_output = llm.models.generate_content(model="gemini-2.0-flash", contents=prompt).text
+        #structured_output = llm.invoke(prompt).content
 
         keyword_list = Collection_List[idx]
         matches = [kw for kw in keyword_list if re.search(rf"\b{re.escape(kw)}\b", structured_output)]
@@ -470,8 +495,9 @@ In list 4, strictly list only the most directly relevant subject areas in the pa
 
 #@app.post("/api/generate-study-3") ## investigators. # /generate-study-3
 def chat_with_bot_structured_3(message = """Based on the paper, give me the investigators involved in the paper using tuples where each tuple is formatted as (first_name, last_name, email, department, organization, country). Find their corresponding first name, last name, their email, department, organization, and country.
-                                     These informations should be on first page! Only answer with tuples and if there's multiple tuples, use commas "," after each tuple. And if you don't know the country infer based on department location or write 'United States'. Write 'NULL' for the other fields you have no clue on.""", k: int = 5):
+                                     This information should be on the first page! Only answer with tuples and if there's multiple tuples, use commas "," after each tuple. And if you don't know the country infer based on department location or write 'United States'. Write 'NULL' for the other fields you have no clue on.""", k: int = 5):
     # Initialize your LLM
+    '''
     CHATGPT_APIKEY = ""
     llm = ChatOpenAI(
         model="gpt-4o-mini",
@@ -479,6 +505,8 @@ def chat_with_bot_structured_3(message = """Based on the paper, give me the inve
         temperature=0.5,
         max_tokens=1200
     )
+    '''
+    llm = genai.Client(api_key="???")
     # Retrieve your prompt template (which should expect keys "context" and "question")
     template = return_template()
     prompt_template = ChatPromptTemplate.from_template(template)
@@ -497,7 +525,8 @@ def chat_with_bot_structured_3(message = """Based on the paper, give me the inve
     best_matches = "\n\n---\n\n".join([str(document_chunks[idx]) for idx in indices[0]])
 
     prompt = prompt_template.format(context = best_matches, question = list_message)
-    structured_output = llm.invoke(prompt).content #
+    structured_output = llm.models.generate_content(model="gemini-2.0-flash", contents=prompt).text
+    #structured_output = llm.invoke(prompt).content #
     structured_output = structured_output.replace(".", ".\n")
     
     logger.info(f"Response Data: {structured_output}") ## for debugging purposes. 
@@ -516,7 +545,7 @@ def chat_with_bot_structured_4(message = """In the experimental category list, p
              "Compares different animal diet conditions (testing of Nutrients, Phytochemicals, Probiotics)",
              "Compares different light/dark cycles",
              "Compares different mouse strains"]
-
+    '''
     CHATGPT_APIKEY = ""
 
     llm = ChatOpenAI(
@@ -525,7 +554,8 @@ def chat_with_bot_structured_4(message = """In the experimental category list, p
         temperature=0.5,
         max_tokens=1200
     )
-
+    '''
+    llm = genai.Client(api_key="???")
     first_message = message + " " + str(list1)[1:-1] # convert it to a string message. we'll later have to
 
     template = return_template()
@@ -536,7 +566,9 @@ def chat_with_bot_structured_4(message = """In the experimental category list, p
 
     best_matches = "\n\n---\n\n".join([str(document_chunks[idx]) for idx in indices[0]])
     prompt = prompt_template.format(context = best_matches, question = first_message) # construct the prompt.
-    output = llm.invoke(prompt).content # get the output!
+
+    output = llm.models.generate_content(model="gemini-2.0-flash", contents=prompt).text
+    #output = llm.invoke(prompt).content # get the output!
 
     if faiss_index is None or not document_chunks:
         return {"reply": "RAG system not initialized. Upload a document first."} # return this message if something doesn't work!
@@ -564,7 +596,10 @@ def chat_with_bot_structured_4(message = """In the experimental category list, p
         _, indices = faiss_index.search(query_vector, k+2) # search for the relevant indices.
         best_matches = "\n\n---\n\n".join([str(document_chunks[idx]) for idx in indices[0]])
 
-        output = llm.invoke(prompt_template.format(context = best_matches, question = combined_message)).content # get the output.
+        comb_prompt = combined_message + " " + str(best_matches)
+
+        output = llm.models.generate_content(model="gemini-2.0-flash", contents=comb_prompt).text
+        #output = llm.invoke(prompt_template.format(context = best_matches, question = combined_message)).content # get the output.
         matches = [kw for kw in list2 if re.search(rf"\b{re.escape(kw)}\b", output)] # check for the matches.
         answer_dict[1] = matches # add the matches to the dictionary.
         return answer_dict
@@ -574,12 +609,16 @@ def chat_with_bot_structured_4(message = """In the experimental category list, p
 
 def chat_with_bot_structured_4_generalized(question, question_list, Collection_list, k =5, text = None): ## construct a question_list and collection_list as well to make our
                                                            ## function more generalized and easier to use.
+    '''
     CHATGPT_APIKEY = ""
     llm = ChatOpenAI(
         model="gpt-4o-mini",
         api_key=CHATGPT_APIKEY,
         temperature=0.5,
         max_tokens=1200)
+    '''
+
+    llm = genai.Client(api_key="???")
 
     answer = {}
     for i in range(len(question_list)):
@@ -590,7 +629,11 @@ def chat_with_bot_structured_4_generalized(question, question_list, Collection_l
         _, indices = faiss_index.search(query_vector, k)
         best_matches = "\n\n---\n\n".join([str(document_chunks[idx]) for idx in indices[0]])
 
-        output = llm.invoke(prompt_template.format(context = best_matches, question = question_list[i])).content
+        comb_prompt = question_list[i] + " " + str(best_matches)
+
+        output = llm.models.generate_content(model="gemini-2.0-flash", contents=comb_prompt).text
+
+        #output = llm.invoke(prompt_template.format(context = best_matches, question = question_list[i])).content
         answer[f"{text}_{i}"] = output
 
     index = 3
@@ -601,7 +644,10 @@ def chat_with_bot_structured_4_generalized(question, question_list, Collection_l
         _, indices = faiss_index.search(query_vector, k)
         best_matches = "\n\n---\n\n".join([str(document_chunks[idx]) for idx in indices[0]])
 
-        output = llm.invoke(prompt_template.format(context = best_matches, question = question_1)).content
+        comb_prompt = question_1 + " " + str(best_matches)
+
+        output = llm.models.generate_content(model="gemini-2.0-flash", contents=comb_prompt).text
+        #output = llm.invoke(prompt_template.format(context = best_matches, question = question_1)).content
         matches = [kw for kw in i if re.search(rf"\b{re.escape(kw)}\b", output)]
         answer[f"{text}_{index}"] = matches
         index += 1
@@ -613,14 +659,15 @@ def chat_with_bot_structured_4_generalized(question, question_list, Collection_l
 def chat_with_bot_structured_5(message = """Based on the paper, list the experiment groups where they each should contain information about sex and age in weeks as an answer.
                                      Answer strictly with a tuple format (sex, weeks) and list them with a "-". sex is denoted as 1 as male and 0 for female. If you can't
                                      find the sex and/or age, omit that answer.""", k: int = 5):
-
+    '''
     CHATGPT_APIKEY = ""
     llm = ChatOpenAI(
         model="gpt-4o-mini",
         api_key=CHATGPT_APIKEY,
         temperature=0.5,
         max_tokens=1200)
-
+    '''
+    llm = genai.Client(api_key="???")
 
     template = return_template()
     prompt_template = ChatPromptTemplate.from_template(template)
@@ -635,7 +682,8 @@ def chat_with_bot_structured_5(message = """Based on the paper, list the experim
     best_matches = "\n\n---\n\n".join([str(document_chunks[idx]) for idx in indices[0]])
 
     prompt = prompt_template.format(context = best_matches, question = message)
-    structured_output = llm.invoke(prompt).content #
+    structured_output = llm.models.generate_content(model="gemini-2.0-flash", contents=prompt).text
+    #structured_output = llm.invoke(prompt).content
 
     structured_output = structured_output.split("-")
     #structured_output = structured_output.split("-")
@@ -649,13 +697,15 @@ def chat_with_bot_structured_5(message = """Based on the paper, list the experim
 #@app.post("/api/generate-study-5") # /generate-study-5 ## phenotype analysis
 def chat_with_bot_structured_6(message = "Based on the paper, select the following type of analyses that were performed to phenotype the mice if mentioned:", k: int = 5):
     # Initialize your LLM
+    '''
     CHATGPT_APIKEY = ""
     llm = ChatOpenAI(
         model="gpt-4o-mini",
         api_key=CHATGPT_APIKEY,
         temperature=0.5,
-        max_tokens=1200
-    )
+        max_tokens=1200)
+    '''
+    llm = genai.Client(api_key="???")
     # Retrieve your prompt template (which should expect keys "context" and "question")
     template = return_template()
     prompt_template = ChatPromptTemplate.from_template(template)
@@ -693,7 +743,8 @@ def chat_with_bot_structured_6(message = "Based on the paper, select the followi
     best_matches = "\n\n---\n\n".join([str(document_chunks[idx]) for idx in indices[0]])
 
     prompt = prompt_template.format(context = best_matches, question = message)
-    structured_output = llm.invoke(prompt).content #
+    structured_output = llm.models.generate_content(model="gemini-2.0-flash", contents=prompt).text
+    #structured_output = llm.invoke(prompt).content
 
     matches = [kw for kw in list1 if re.search(rf"\b{re.escape(kw.lower())}\b", structured_output.lower())]
     outputs["matches"] = matches # if it's yes then we have to do it again for two other lists.
@@ -723,7 +774,8 @@ def chat_with_bot_structured_5_complement(prompt_template, llm, faiss_index, mes
     best_matches = "\n\n---\n\n".join([str(document_chunks[idx]) for idx in indices[0]])
 
     prompt = prompt_template.format(context = best_matches, question = message)
-    structured_output = llm.invoke(prompt).content
+    structured_output = llm.models.generate_content(model="gemini-2.0-flash", contents=prompt).text
+    #structured_output = llm.invoke(prompt).content
 
     matches = [kw for kw in list_topic if re.search(rf"\b{re.escape(kw.lower())}\b", structured_output.lower())]
     outputs[0] = matches

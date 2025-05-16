@@ -1,0 +1,145 @@
+.message {
+    color: red;
+}
+
+.chatbot-bubble {
+    position: fixed;
+    word-wrap: break-word;
+    max-width: 80%;
+    padding: 10px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.chatbot-container {
+    overflow-y: auto;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    scroll-behavior: smooth;
+    background-color: #ffffff;
+    width: 350px;
+    max-height: 500px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+
+}
+
+.chatbot-header {
+    background-color: #3b82f6;
+    color: white;
+    padding: 10px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px; /* Fixed height for header */
+}
+
+.chatbot-header button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.chatbot-messages {
+    padding: 10px;
+    overflow-y: auto;
+    flex-grow: 1;
+    max-height: 300px; /* Adjust height to fit inside the chatbot */
+    padding-bottom: 60px;
+    word-wrap: break-word; /* Ensure text wraps properly */
+    display: flex;
+    flex-direction: column;
+    scrollbar-width: thin; /* Optional: makes scrollbar less intrusive */
+}
+
+.chatbot-input-container {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    height: 50px;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+    background: white;
+}
+
+.chatbot-input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 25px;
+    border: 1px solid #ddd;
+    outline: none;
+    resize: none; /* Disable resizing the input box */
+    box-sizing: border-box; /* Make sure padding doesn't overflow */
+}
+
+.chat-bubble {
+    padding: 12px;
+    border-radius: 12px;
+    max-width: 80%;
+    margin-bottom: 10px;
+    word-wrap: break-word; /* Ensure text stays within the bubble */
+    overflow-wrap: break-word; /* Alternative for better support */
+}
+
+.chat-bubble.bot {
+    background-color: #f0f0f0;
+    margin-right: auto;
+}
+
+.chat-bubble.user {
+    background-color: #3b82f6;
+    color: white;
+    margin-left: auto;
+}
+
+.navigate-button {
+    background-color: #3b82f6;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.tab-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-tabs .nav-link {
+    cursor: pointer;
+}
+.nav-link i.fa-cog {
+    font-size: 20px; /* Adjust size */
+    margin-left: 5px; /* Add spacing from the "Contact Us" button */
+    color: #333; /* Default color */
+}
+
+.nav-link i.fa-cog:hover {
+    color: #007bff; /* Change color on hover */
+}
+
+.open-chat {
+    border-radius: 50%;
+    position: fixed;
+    height: 50px;
+    width: 50px;
+    background-color: #3b82f6;
+    color: white;
+    margin: 20px;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10000;
+}
