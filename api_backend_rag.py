@@ -245,7 +245,7 @@ async def chat_with_bot(message: str = Form(...), k: int = 5):
     CHATGPT_APIKEY = "???"
     llm = ChatOpenAI(model = "gpt-4o-mini", api_key = CHATGPT_APIKEY, temperature = 0.5, max_tokens = 400)
     '''
-    print("hello")
+
     llm = genai.Client(api_key="???")
 
     template = return_template() # get the template.
@@ -274,25 +274,6 @@ async def chat_with_bot(message: str = Form(...), k: int = 5):
 @app.get("/api/simultaneous_generate_text") 
 async def simultaneous_generate_text():
     answer_1 = chat_with_bot_structured()
-    answer_2 = chat_with_bot_structured_2() 
-    answer_3 = chat_with_bot_structured_3() 
-    answer_4 = chat_with_bot_structured_4() 
-    answer_5 = chat_with_bot_structured_5()
-
-    logger.info("Processed the answers")
-    # "subject_areas": answer_2, "experimental_groups": answer_4,
-    collection_answer = {"study_information": answer_1, "subject_areas": answer_2, "investigators":answer_3, "experimental_groups": answer_4, "phenotype_analysis": answer_5}
-
-    with open(f"{JSON_DEFAULT_PATH}/output_answer.json", "w") as f:
-        json.dump(collection_answer, f, indent=2)
-
-    logger.info("Processed the files!!")
-    return collection_answer # just return the study information tab and subject areas tab.
-
-
-@app.post("/api/simultaneous_generate_text_2")
-async def simultaneous_generate_text_2():
-    answer_1 = chat_with_bot_structured()
     answer_2 = chat_with_bot_structured_2()
     answer_3 = chat_with_bot_structured_3()
     answer_4 = chat_with_bot_structured_4()
@@ -307,66 +288,6 @@ async def simultaneous_generate_text_2():
 
     logger.info("Processed the files!!")
     return collection_answer # just return the study information tab and subject areas tab.
-
-
-
-@app.post("/api/simultaneous_generate_text_3")
-async def simultaneous_generate_text_3():
-    answer_1 = chat_with_bot_structured()
-    answer_2 = chat_with_bot_structured_2()
-    answer_3 = chat_with_bot_structured_3()
-    answer_4 = chat_with_bot_structured_4()
-    answer_5 = chat_with_bot_structured_5()
-
-    logger.info("Processed the answers")
-    # "subject_areas": answer_2, "experimental_groups": answer_4,
-    collection_answer = {"study_information": answer_1, "subject_areas": answer_2, "investigators": answer_3,"experimental_groups": answer_4, "phenotype_analysis": answer_5}
-
-    with open(f"{JSON_DEFAULT_PATH}/output_answer.json", "w") as f:
-        json.dump(collection_answer, f, indent=2)
-
-    logger.info("Processed the files!!")
-    return collection_answer # just return the study information tab and subject areas tab.
-
-
-
-@app.post("/api/simultaneous_generate_text_4")
-async def simultaneous_generate_text_4():
-    answer_1 = chat_with_bot_structured()
-    answer_2 = chat_with_bot_structured_2()
-    answer_3 = chat_with_bot_structured_3()
-    answer_4 = chat_with_bot_structured_4()
-    answer_5 = chat_with_bot_structured_5()
-
-    logger.info("Processed the answers")
-    # "subject_areas": answer_2, "experimental_groups": answer_4,
-    collection_answer = {"study_information": answer_1, "subject_areas": answer_2, "investigators": answer_3, "experimental_groups": answer_4, "phenotype_analysis": answer_5}
-
-    with open(f"{JSON_DEFAULT_PATH}/output_answer.json", "w") as f:
-        json.dump(collection_answer, f, indent=2)
-
-    logger.info("Processed the files!!")
-    return collection_answer # just return the study information tab and subject areas tab.
-
-
-@app.post("/api/simultaneous_generate_text_5")
-async def simultaneous_generate_text_5():
-    answer_1 = chat_with_bot_structured()
-    answer_2 = chat_with_bot_structured_2()
-    answer_3 = chat_with_bot_structured_3()
-    answer_4 = chat_with_bot_structured_4()
-    answer_5 = chat_with_bot_structured_5()
-
-    logger.info("Processed the answers")
-    # "subject_areas": answer_2, "experimental_groups": answer_4,
-    collection_answer = {"study_information": answer_1, "subject_areas": answer_2, "investigators": answer_3, "experimental_groups": answer_4, "phenotype_analysis": answer_5}
-
-    with open(f"{JSON_DEFAULT_PATH}/output_answer.json", "w") as f:
-        json.dump(collection_answer, f, indent=2)
-
-    logger.info("Processed the files!!")
-    return collection_answer # just return the study information tab and subject areas tab.
-
 
 #@app.post("/api/generate-study") #/generate-study ## study information tab.
 def chat_with_bot_structured(message = """What is the title?
@@ -422,13 +343,16 @@ Has this study been published, answer only yes or no without punctuation""", k: 
     binary_map = {"yes": 1, "no":0}
 
     binary_answer = outputs[list_message[-1]].lower()
+
+    info = get_title_and_date()
+
     if binary_answer in binary_map.keys():
-        response = {"studyTitle": outputs["What is the title?"], "studySummary": outputs["What's the summary of the paper?"], "funding": outputs["What are the funding sources of the paper?"],
-                    "conflicts": outputs["What are the conflicts of interest of the paper?"], "Date": outputs[list_message[-2]], "published": binary_map[binary_answer], "summary_chunks": saved_chunks}
+        response = {"studyTitle": info["Title"], "studySummary": outputs["What's the summary of the paper?"], "funding": outputs["What are the funding sources of the paper?"],
+                    "conflicts": outputs["What are the conflicts of interest of the paper?"], "Date": info["Date"], "published": binary_map[binary_answer], "summary_chunks": saved_chunks}
         return response
     else:
-        response = {"studyTitle": outputs["What is the title?"], "studySummary": outputs["What's the summary of the paper?"], "funding": outputs["What are the funding sources of the paper?"],
-                    "conflicts": outputs["What are the conflicts of interest of the paper?"], "Date": outputs[list_message[-2]], "published": 0, "summary_chunks": saved_chunks}
+        response = {"studyTitle": info["Title"], "studySummary": outputs["What's the summary of the paper?"], "funding": outputs["What are the funding sources of the paper?"],
+                    "conflicts": outputs["What are the conflicts of interest of the paper?"], "Date": info["Date"], "published": 0, "summary_chunks": saved_chunks}
         return response
 
 
@@ -783,7 +707,32 @@ def chat_with_bot_structured_5_complement(prompt_template, llm, faiss_index, mes
     #return outputs
     return matches
 
+# New Info Retrieval
+def get_title_and_date():
 
+    message = "What is the title?"
+
+    # Ensure the RAG system is initialized
+    if faiss_index is None or not document_chunks:
+        return {"reply": "RAG system not initialized. Upload a document first."}
+
+    query_vector = np.array([get_sentence_embedding(message, glove_embeddings)], dtype=np.float32)
+    _, indices = faiss_index.search(query_vector, 1)
+
+    title = document_chunks[indices[0][0]].metadata['title']
+    print(document_chunks[indices[0][0]].metadata)
+
+    date = get_date(document_chunks[indices[0][0]].metadata['creationdate'])
+    print(date)
+
+    return {"Title": title, "Date": date}
+
+#Example of date structure: 2021-11-30T11:45:36+05:30
+def get_date(date):
+    if len(date) >= 9:
+        return date[5:7] + "/" + date[8:10] + "/" + date[:4]
+    else:
+        return "Unknown"
 
 
 @app.get("/api/rag-query") # /rag-query
