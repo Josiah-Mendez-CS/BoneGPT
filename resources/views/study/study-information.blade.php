@@ -88,10 +88,8 @@
             </div>
         </form>
     </div>
-    <?php include_once "/home/ajacob/BoneGPT/resources/views/components/testcomp.blade.php";?>
-    <div style="position: fixed; bottom: 20px; right: 370px; z-index: 10000;">
-        <button id="generate-study-btn" class="btn btn-success" style="display: block; visibility: visible;">Click here to generate study information</button>
-    </div>
+    <?php include_once "/home/ajacob/BoneGPT/resources/views/components/chatbot.blade.php";?>
+    <?php include_once "/home/ajacob/BoneGPT/resources/views/components/gen-info.blade.php";?>
     <script>
         document.getElementById("generate-study-btn").addEventListener("click", async () => {
             try {

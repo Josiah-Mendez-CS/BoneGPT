@@ -879,7 +879,7 @@
                 // original url: http://127.0.0.1:5000/chatbot
                 //https://rossa.soc.uconn.edu/api/rag-upload
                 try {
-                    const response = await fetch("https://rossa.soc.uconn.edu/api/data-chatbot", {
+                    const response = await fetch("http://localhost:5000/api/data-chatbot", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/x-www-form-urlencoded",
@@ -906,7 +906,7 @@
 
             let response;
             try {
-                response = await fetch('https://rossa.soc.uconn.edu/highlight-data'); // Replace with the actual path to your JSON file
+                response = await fetch('http://localhost:5000/highlight-data'); // Replace with the actual path to your JSON file
                 await axios.post('/log', {
                     message: 'Fetch request sent to /highlight-data',
                     level: 'info'

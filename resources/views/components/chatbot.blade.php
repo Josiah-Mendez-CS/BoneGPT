@@ -1,10 +1,13 @@
-<?php 
-  function createChatbot() {'
+<style>
+    <?php include '/home/ajacob/BoneGPT/resources/css/chatbot.css'; ?>
+</style>
+<div>
+    <span class="message">Hello</span>
+</div>
 <div id="chatbot-bubble" class="chatbot-bubble">
-        ?
-    </div>
-
-    <div id="chatbot-container" class="chatbot-container">
+    <button class="open-chat" id="chatbot-bubble">Open</button>
+</div>
+<div id="chatbot-container" class="chatbot-container">
         <div class="chatbot-header">
             <span>Chatbot</span>
             <button id="close-chatbot">×</button>
@@ -52,9 +55,108 @@
         </div>
     </div>
 
-    <div style="position: fixed; bottom: 20px; right: 370px; z-index: 10000;">
-    <button id="generate-study-btn" class="btn btn-success" style="display: block; visibility: visible;">Click here to generate study information</button>
+
+<script>
+    const chatbotBubble = document.getElementById("chatbot-bubble");
+    const chatbotContainer = document.getElementById("chatbot-container");
+    const closeButton = document.getElementById("close-chatbot");
+    const chatMessages = document.getElementById("chatbot-messages");
+    const userInput = document.getElementById("user-input");
+    const navigateGraph = document.getElementById("navigate-graph");
+
+    // Open chatbot container
+    chatbotBubble.addEventListener("click", () => {
+        chatbotContainer.style.display = "flex";
+        chatbotBubble.style.display = "none";
+    });
+
+    // Close chatbot container
+    closeButton.addEventListener("click", () => {
+        chatbotContainer.style.display = "none";
+        chatbotBubble.style.display = "flex";
+    });
+
+    // Handle user input
+    userInput.addEventListener("keypress", async (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            console.log("key pressed")
+            const userMessage = userInput.value.trim();
+            if (userMessage === "") return;
+
+            appendMessage(userMessage, "user");
+            userInput.value = ""; // Clear the input
+            // http://soc-sdp-27.soc.uconn.edu/api/chatbot
+            // Send user input to the backend LLM API
+            // original url: http://127.0.0.1:5000/chatbot
+            //https://rossa.soc.uconn.edu/api/rag-upload
+            try {
+                
+                const response = await fetch("http://localhost:5000/chatbot", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: new URLSearchParams({ message: userMessage }),
+                });
+                const data = await response.json();
+                appendMessage(data.reply, "bot");
+            } catch (error) {
+                console.error("Error:", error);
+                appendMessage("Could not get response.", "bot");
+            }
+        }
+    });
+
+    function appendMessage(message, sender) {
+        const div = document.createElement("div");
+        div.classList.add("chat-bubble", sender);
+        div.innerText = message;
+        chatMessages.appendChild(div);
+        setTimeout(() => {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 100);
+    }
+
+    document.getElementById("toggle-info").addEventListener("click", function () {
+        let infoBox = document.getElementById("study-info-box");
+        if (infoBox.style.display === "none" || infoBox.style.display === "") {
+            infoBox.style.display = "block"; // Show box
+            document.getElementById("study-info-content").innerText = "This study focuses on ... (you can dynamically load data here)";
+        } else {
+            infoBox.style.display = "none"; // Hide box
+        }
+    });
+
+    // Handle file upload for RAG
+    document.getElementById("upload-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(); // hey this is JiWon 
+        const ragFile = document.getElementById("rag-file").files[0];
+
+        if (ragFile) {
+            formData.append("file", ragFile);
+            // this is JiWon 
+            try {
+                // "http://127.0.0.1:5000/data-chatbot"
+                //
+                //127.0.0.1:5000
+                //http://soc-sdp-27.soc.uconn.edu/api/rag-upload
+                const response = await fetch("http://localhost:5000/api/rag-upload", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const data = await response.json();
+                alert(data.message); // Notify user of upload status
+            } catch (error) {
+                console.error("Error uploading file:", error);
+                alert("Error uploading file.");
+            }
+        } else {
+            alert("Please select a file before uploading.");
+        }
+    });
+</script>
 </div>
-    ';
-  }
-  ?>
